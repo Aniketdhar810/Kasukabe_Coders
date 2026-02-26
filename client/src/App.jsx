@@ -1,34 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from './components/ui/button'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
-
+import { Routes, Route } from "react-router-dom";
+import Signup from "./pages/Signup";
+import Login from "./pages/login";
+import Dashboard from "./pages/dashboard";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <Button>Click Me</Button>
-      // 33% of the carousel width.
-<Carousel>
-  <CarouselContent>
-    <CarouselItem className="basis-1/3">...</CarouselItem>
-    <CarouselItem className="basis-1/3">...</CarouselItem>
-    <CarouselItem className="basis-1/3">...</CarouselItem>
-  </CarouselContent>
-</Carousel>
-
-    </>
-  )
+    <Routes>
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
