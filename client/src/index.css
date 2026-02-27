@@ -43,6 +43,14 @@
 ================================ */
 html {
   font-family: var(--font-sans);
+  color: #111827; /* gray-900 — light mode default */
+  background-color: var(--bg-light);
+}
+
+/* Explicit light-mode body contrast */
+body {
+  color: #111827;
+  background-color: var(--bg-light);
 }
 
 ::selection {
@@ -111,11 +119,33 @@ html {
 /* ================================
    DARK MODE CONTRAST FIX
 ================================ */
+/* ================================
+   DARK MODE BODY OVERRIDES
+================================ */
 .dark {
   color-scheme: dark;
 }
 
+.dark,
 .dark body {
   background-color: #0A0A0E;
-  color: #e5e7eb; /* gray-200 */
+  color: #e5e7eb;
+}
+
+/* ===== Custom Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #84cc16; /* lime-500 */
 }
