@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 function getInitialTheme() {
   if (typeof window === "undefined") return false;
@@ -9,6 +10,40 @@ function getInitialTheme() {
 
 export default function LandingPage() {
   const [dark, setDark] = useState(getInitialTheme);
+  const { scrollYProgress } = useScroll();
+  const codeLayerY = useTransform(scrollYProgress, [0, 1], [0, -260]);
+  const codeLayerOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.18, 0.3, 0.22, 0.14]);
+
+  const binaryColumns = [
+    "1010110010110",
+    "0101101110011",
+    "1100101001011",
+    "0011010111100",
+    "1110001010010",
+    "0100110101110",
+    "1001110010101",
+    "0110100111001",
+    "1011001010111",
+    "0010111010100",
+  ];
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 28 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const staggerContainer = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.12,
+      },
+    },
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -16,10 +51,42 @@ export default function LandingPage() {
   }, [dark]);
 
   return (
-    <div className="bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen selection:bg-primary selection:text-black">
+    <div className="relative bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen selection:bg-primary selection:text-black overflow-hidden">
+
+      <motion.div
+        style={{ y: codeLayerY, opacity: codeLayerOpacity }}
+        className="pointer-events-none absolute inset-0 z-0"
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+        <div className="h-full w-full max-w-7xl mx-auto px-4 grid grid-cols-5 md:grid-cols-10 gap-6">
+          {binaryColumns.map((bits, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0.2, y: 0 }}
+              animate={{ opacity: [0.16, 0.38, 0.16], y: [0, 18, 0] }}
+              transition={{
+                duration: 3 + (idx % 4),
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: idx * 0.15,
+              }}
+              className="font-mono text-[10px] md:text-xs leading-5 text-primary/50 tracking-[0.22em] whitespace-pre-line select-none"
+            >
+              {(bits + "\n").repeat(10)}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      <div className="relative z-10">
 
       {/* ================= NAVBAR ================= */}
-      <nav className="fixed w-full z-50 backdrop-blur-md bg-background-light/80 dark:bg-background-dark/80 border-b border-gray-200 dark:border-white/10">
+      <motion.nav
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="fixed w-full z-50 backdrop-blur-md bg-background-light/80 dark:bg-background-dark/80 border-b border-gray-200 dark:border-white/10"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
@@ -63,85 +130,131 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* ================= HERO ================= */}
       <section className="relative pt-32 pb-24 lg:pt-48 overflow-hidden">
         <div className="absolute inset-0 bg-hero-glow-light dark:bg-hero-glow opacity-30 pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-medium mb-8">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="relative z-10 max-w-7xl mx-auto px-4 text-center"
+        >
+          <motion.div
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-medium mb-8"
+          >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
             DevRooms AI 2.0 is now live
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+          <motion.h1
+            variants={fadeUp}
+            className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight"
+          >
             Collaborate. Code.
             <br />
             <span className="light-text-gradient dark:text-gradient">
               Debug. Together.
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-400 mb-10">
+          <motion.p
+            variants={fadeUp}
+            className="max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-400 mb-10"
+          >
             The first AI-native collaboration platform. Spin up instant dev
             environments, chat with context-aware AI, and ship faster than ever
             before.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-            <a className="px-8 py-4 bg-primary text-black font-bold rounded-lg shadow-lg hover:scale-105 transition">
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row justify-center gap-4 mb-16"
+          >
+            <motion.a
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-8 py-4 bg-primary text-black font-bold rounded-lg shadow-lg hover:scale-105 transition"
+            >
               Create Room →
-            </a>
-            <a className="px-8 py-4 bg-surface-light dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg">
+            </motion.a>
+            <motion.a
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-8 py-4 bg-surface-light dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg"
+            >
               Join Existing
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
 
           {/* DASHBOARD IMAGE */}
-          <div className="relative max-w-5xl mx-auto">
+          <motion.div
+            variants={fadeUp}
+            className="relative max-w-5xl mx-auto"
+          >
             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-20" />
-            <img
+            <motion.img
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
               className="relative rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl margin-auto shadow-2xl"
               src="dashboard.svg"
               alt="DevRooms dashboard"
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ================= LOGOS ================= */}
-      <section className="py-10 border-y border-gray-200 dark:border-white/5 bg-surface-light dark:bg-surface-dark">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.25 }}
+        variants={staggerContainer}
+        className="py-10 border-y border-gray-200 dark:border-white/5 bg-surface-light dark:bg-surface-dark"
+      >
         <p className="text-center text-xs tracking-widest uppercase mb-6 text-gray-500">
           Powering engineering teams at
         </p>
         <div className="flex justify-center flex-wrap gap-12 opacity-60">
           {["AcmeCorp", "StarShip", "FastScale", "InfinityLoop", "GridStack"].map(
             (c) => (
-              <div
+              <motion.div
                 key={c}
+                variants={fadeUp}
+                whileHover={{ scale: 1.04 }}
                 className="font-display font-bold text-xl text-gray-800 dark:text-white"
               >
                 {c}
-              </div>
+              </motion.div>
             )
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= FEATURES ================= */}
-      <section className="py-24">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={staggerContainer}
+        className="py-24"
+      >
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-6">
+          <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-display font-bold mb-6">
             Supercharge your git workflow
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-20">
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-lg text-gray-600 dark:text-gray-400 mb-20">
             Forget screen sharing and merge conflicts. DevRooms brings your entire
             team into the same context.
-          </p>
+          </motion.p>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -149,8 +262,10 @@ export default function LandingPage() {
               ["bug_report", "AI Bug Detection"],
               ["smart_toy", "Context-Aware Assistant"],
             ].map(([icon, title]) => (
-              <div
+              <motion.div
                 key={title}
+                variants={fadeUp}
+                whileHover={{ y: -6 }}
                 className="p-8 rounded-2xl bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-white/5"
               >
                 <span className="material-symbols-outlined text-primary mb-4 block">
@@ -160,16 +275,22 @@ export default function LandingPage() {
                 <p className="text-gray-600 dark:text-gray-400">
                   Built for modern distributed teams.
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= LAPTOP SECTION ================= */}
-      <section className="py-24 bg-gray-50 dark:bg-[#050507]">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={staggerContainer}
+        className="py-24 bg-gray-50 dark:bg-[#050507]"
+      >
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-          <div>
+          <motion.div variants={fadeUp}>
             <h2 className="text-4xl font-display font-bold mb-6">
               From Idea to Production in{" "}
               <span className="text-primary">Record Time</span>
@@ -177,28 +298,69 @@ export default function LandingPage() {
             <p className="text-gray-600 dark:text-gray-400 mb-8">
               Connect GitHub, GitLab, or Bitbucket and start coding instantly.
             </p>
-          </div>
+          </motion.div>
 
-          <img
+          <motion.img
+            variants={fadeUp}
+            whileHover={{ scale: 1.01 }}
             className="rounded-xl shadow-2xl border border-gray-200 dark:border-white/10"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBPbJn2HUs7xAJ1nKp6A_50PNrH96K4UuIV9CyCCTCk0WTCxHH2w4EatM8lwNorGJNrDp4V_KvNikt5yY4M3nU-vrpXJJmWDirQ_FlFNdFEP3_e4XqxmwlHtek1NLr8aiEXnbc0w7Ppx_4e9R7SUiuZ_4C89mOarglz3MbdEQ8haYmdDimAfTYzF6wA4Ed3zVXorZTYp9BSJRF5PjHHVbCA_o0nwoUVbwqbErTBZALnC2MykcQX_iSKJDBjYKjko6JR1DFmU29jMY"
             alt="Laptop"
           />
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= CTA ================= */}
-      <section className="py-24 text-center">
-        <h2 className="text-5xl font-display font-bold mb-6">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="py-24 text-center"
+      >
+        <motion.h2 variants={fadeUp} className="text-5xl font-display font-bold mb-6">
           Start coding for free.
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-10">
+        </motion.h2>
+        <motion.p variants={fadeUp} className="text-gray-600 dark:text-gray-400 mb-10">
           Join thousands of developers building with AI collaboration.
-        </p>
-        <a className="px-10 py-4 bg-primary text-black font-bold rounded-lg">
+        </motion.p>
+        <motion.a
+          variants={fadeUp}
+          whileHover={{ y: -2, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="px-10 py-4 bg-primary text-black font-bold rounded-lg"
+        >
           Get Started Now
-        </a>
-      </section>
+        </motion.a>
+      </motion.section>
+
+      {/* ================= FOOTER ================= */}
+      <motion.footer
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="border-t border-gray-200 dark:border-white/10 bg-surface-light dark:bg-surface-dark"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <motion.div variants={fadeUp} className="font-display font-bold text-lg">
+            DevRooms<span className="text-primary">.ai</span>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+            {["Privacy", "Terms", "Docs"].map((item) => (
+              <a key={item} href="#" className="hover:text-primary transition-colors">
+                {item}
+              </a>
+            ))}
+          </motion.div>
+
+          <motion.p variants={fadeUp} className="text-sm text-gray-500 dark:text-gray-500">
+            © {new Date().getFullYear()} DevRooms AI. All rights reserved.
+          </motion.p>
+        </div>
+      </motion.footer>
+      </div>
     </div>
   );
 }
