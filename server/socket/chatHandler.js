@@ -29,34 +29,45 @@ async function authenticateSocket(socket, next) {
   }
 }
 
-// Get AI response from Gemini
+// Get AI response from Gemini with retry logic
 async function getAIResponse(userMessage, roomName, chatHistory) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-    const historyContext =
-      chatHistory.length > 0
-        ? chatHistory
-            .slice(-10)
-            .map(
-              (m) =>
-                `${m.type === "ai" ? "AI" : m.senderName || "User"}: ${m.content}`
-            )
-            .join("\n")
-        : "";
+  const historyContext =
+    chatHistory.length > 0
+      ? chatHistory
+          .slice(-10)
+          .map(
+            (m) =>
+              `${m.type === "ai" ? "AI" : m.senderName || "User"}: ${m.content}`
+          )
+          .join("\n")
+      : "";
 
-    const prompt = `You are a helpful AI assistant in a collaborative developer chat room called "${roomName}". 
+  const prompt = `You are a helpful AI assistant in a collaborative developer chat room called "${roomName}". 
 Keep your responses concise, technical, and relevant to software development. 
 Use markdown formatting for code blocks when appropriate.
 
 ${historyContext ? `Recent chat context:\n${historyContext}\n\n` : ""}User asked: ${userMessage}`;
 
-    const result = await model.generateContent(prompt);
-    return result.response.text();
-  } catch (err) {
-    console.error("Gemini AI error:", err.message);
-    return "Sorry, I'm unable to process that request right now. Please try again later.";
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (err) {
+      console.error(`Gemini attempt ${attempt}/3 failed:`, err.message);
+      if (attempt < 3) {
+        // Extract retryDelay from error message (429 responses include it)
+        const retryMatch = err.message?.match(/(\d+)\s*second/i);
+        const delay = retryMatch
+          ? parseInt(retryMatch[1]) * 1000
+          : Math.pow(2, attempt) * 2000; // 2s, 4s fallback
+        console.log(`Retrying Gemini in ${delay}ms...`);
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
   }
+  return "Sorry, I'm unable to process that request right now. Please try again later.";
 }
 
 module.exports = function registerChatHandlers(io) {
