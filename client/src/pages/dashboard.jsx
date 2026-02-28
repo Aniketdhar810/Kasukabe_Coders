@@ -6,6 +6,7 @@ import Header from "../components/dashboard/Header";
 import StatCard from "../components/dashboard/StatCard";
 import RoomCard from "../components/dashboard/RoomCard";
 import CreateRoomCard from "../components/dashboard/CreateRoomCard";
+import JoinRoomCard from "../components/dashboard/JoinRoomCard";
 import API from "../lib/api";
 
 export default function Dashboard() {
@@ -90,6 +91,7 @@ export default function Dashboard() {
                 <RoomCard key={room._id} room={room} />
               ))}
               <CreateRoomCard />
+              <JoinRoomCard />
             </div>
           )}
         </main>
