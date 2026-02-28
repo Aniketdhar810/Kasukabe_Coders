@@ -44,7 +44,7 @@ export default function Login() {
               </span>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              DevRooms<span className="text-[#DFFF5E]">.ai</span>
+              ARIA<span className="text-[#DFFF5E]">.ai</span>
             </span>
           </div>
         </header>

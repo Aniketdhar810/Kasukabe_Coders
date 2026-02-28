@@ -6,7 +6,7 @@ export default function Header() {
         <div className="w-8 h-8 bg-lime-400 text-black font-bold flex items-center justify-center rounded">
           D
         </div>
-        <span className="font-bold">DevRooms AI</span>
+        <span className="font-bold">ARIA AI</span>
       </div>
 
       <div className="flex items-center gap-6">

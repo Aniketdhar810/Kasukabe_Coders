@@ -18,7 +18,7 @@ const CODE_LINES = [
     { t: "keyword", v: "const" },
     { t: "normal",  v: " room = " },
     { t: "keyword", v: "await" },
-    { t: "func",    v: " DevRooms" },
+    { t: "func",    v: " ARIA" },
     { t: "normal",  v: ".create({" },
   ],
   [

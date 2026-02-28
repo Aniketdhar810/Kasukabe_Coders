@@ -82,7 +82,7 @@ export default function LandingPage() {
                 D
               </div>
               <span className="font-display font-bold text-xl tracking-tight" style={{ color: dark ? '#ffffff' : '#111827' }}>
-                DevRooms<span className="text-primary">.ai</span>
+                ARIA<span className="text-primary">.ai</span>
               </span>
             </div>
 
@@ -145,7 +145,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
-                DevRooms AI 2.0 is now live
+                ARIA AI 2.0 is now live
               </motion.div>
 
               <motion.h1
@@ -267,7 +267,7 @@ export default function LandingPage() {
                   : "0 30px 80px rgba(0,0,0,0.15)",
               }}
               src="dashboard.svg"
-              alt="DevRooms dashboard"
+              alt="ARIA dashboard"
             />
           </motion.div>
         </motion.div>
@@ -328,7 +328,7 @@ export default function LandingPage() {
             />
           </motion.div>
           <motion.p variants={fadeUp} className="text-lg mb-20" style={{ color: dark ? "#9ca3af" : "#4b5563" }}>
-            Forget screen sharing and merge conflicts. DevRooms brings your entire
+            Forget screen sharing and merge conflicts. ARIA brings your entire
             team into the same context.
           </motion.p>
 
@@ -504,7 +504,7 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <motion.div variants={fadeUp} className="font-display font-bold text-lg" style={{ color: dark ? "#ffffff" : "#111827" }}>
-            DevRooms<span className="text-primary">.ai</span>
+            ARIA<span className="text-primary">.ai</span>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex items-center gap-6 text-sm" style={{ color: dark ? "#9ca3af" : "#4b5563" }}>
@@ -516,7 +516,7 @@ export default function LandingPage() {
           </motion.div>
 
           <motion.p variants={fadeUp} className="text-sm font-mono" style={{ color: dark ? "#6b7280" : "#6b7280" }}>
-            © {new Date().getFullYear()} DevRooms AI. All rights reserved.
+            © {new Date().getFullYear()} ARIA AI. All rights reserved.
           </motion.p>
         </div>
       </motion.footer>
