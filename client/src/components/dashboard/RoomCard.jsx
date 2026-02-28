@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 export default function RoomCard({ room }) {
+  const navigate = useNavigate();
   return (
-    <div className="bg-[#18181F] border border-[#1F2937] rounded-xl p-6 hover:border-lime-400/50 transition group cursor-pointer">
+    <div className="bg-[#18181F] border border-[#1F2937] rounded-xl p-6 hover:border-lime-400/50 transition group cursor-pointer" onClick={() => navigate("/chat")}>
 
       <div className="mb-4">
         <h3 className="text-lg font-semibold group-hover:text-lime-400 transition">

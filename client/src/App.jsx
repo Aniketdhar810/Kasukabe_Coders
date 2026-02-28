@@ -5,6 +5,7 @@ import Dashboard from "./pages/dashboard";
 import LandingPage from "./pages/LandingPage";
 import CreateRoom from "./pages/newRoom";
 import Profile from "./pages/profile"
+import ChatRoom from "./pages/chatRoom";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/create-room" element={<CreateRoom />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/chat" element={<ChatRoom />} />
     </Routes>
   );
 }
