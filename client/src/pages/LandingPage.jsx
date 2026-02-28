@@ -79,7 +79,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-black font-bold font-display text-xl">
-                D
+                A
               </div>
               <span className="font-display font-bold text-xl tracking-tight" style={{ color: dark ? '#ffffff' : '#111827' }}>
                 ARIA<span className="text-primary">.ai</span>

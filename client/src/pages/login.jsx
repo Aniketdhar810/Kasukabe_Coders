@@ -129,7 +129,7 @@ export default function Login() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#DFFF5E] text-black font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-[#d0f04e] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full bg-[#DFFF5E] cursor-pointer text-black font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-[#d0f04e] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
             >
               Sign In
               <ArrowRight size={18} />
