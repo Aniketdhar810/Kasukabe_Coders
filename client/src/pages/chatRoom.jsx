@@ -16,6 +16,7 @@ export default function ChatRoom() {
   const {
     isConnected,
     messages,
+    allMembers,
     onlineUsers,
     typingUsers,
     isAITyping,
@@ -83,7 +84,7 @@ export default function ChatRoom() {
       </main>
 
       {/* ===================== RIGHT PANEL ===================== */}
-      <RightPanel onlineUsers={onlineUsers} />
+      <RightPanel allMembers={allMembers} onlineUsers={onlineUsers} />
 
     </div>
   );

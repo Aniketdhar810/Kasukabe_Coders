@@ -84,6 +84,46 @@ exports.listMyRooms = async (req, res) => {
   }
 };
 
+exports.getRoomMembers = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({ message: "Invalid room id" });
+    }
+
+    // Ensure requester is a member
+    const requesterMembership = await RoomMembership.findOne({
+      room: roomId,
+      user: req.user._id,
+      status: "active",
+    });
+    if (!requesterMembership) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const memberships = await RoomMembership.find({
+      room: roomId,
+      status: "active",
+    })
+      .populate("user", "_id username email")
+      .sort({ joinedAt: 1 })
+      .lean();
+
+    const members = memberships.map((m) => ({
+      userId: m.user._id,
+      username: m.user.username,
+      email: m.user.email,
+      role: m.role,
+      joinedAt: m.joinedAt,
+    }));
+
+    return res.json({ members });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch members" });
+  }
+};
+
 exports.getRoomById = async (req, res) => {
   try {
     const { roomId } = req.params;

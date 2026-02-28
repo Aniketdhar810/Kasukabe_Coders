@@ -6,8 +6,10 @@ const RoomMembership = require("../models/RoomMembership");
 const Message = require("../models/Message");
 
 const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || "AIzaSyDczOvwOqr0VOa7UchzGZgE_ta-DWlHB_k"
+  process.env.GEMINI_API_KEY || "AIzaSyCud4PpmMLv_73VlfCkGfiBDfcYj51mHu8"
 );
+
+const AI_MODEL = "gemma-3-1b-it";
 
 // Authenticate socket connection via JWT in handshake
 async function authenticateSocket(socket, next) {
@@ -31,7 +33,7 @@ async function authenticateSocket(socket, next) {
 
 // Get AI response from Gemini with retry logic
 async function getAIResponse(userMessage, roomName, chatHistory) {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: AI_MODEL });
 
   const historyContext =
     chatHistory.length > 0
