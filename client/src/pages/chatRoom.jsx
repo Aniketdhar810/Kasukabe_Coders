@@ -1,88 +1,89 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSocket } from "../hooks/useSocket";
 
-/* Sidebar */
 import Sidebar from "../components/dashboard/Sidebar.jsx";
-
-/* Main chat */
 import ChatHeader from "../components/chat/ChatHeader.jsx";
 import MessageList from "../components/chat/MessageList";
 import MessageComposer from "../components/chat/MessageComposer";
-
-/* Right panel */
 import RightPanel from "../components/chat/RightPannel";
 
-/* Mock data (replace with API later) */
-import channelsData from "../data/channels.json";
-import messagesData from "../data/message.json";
-
 export default function ChatRoom() {
-  const [channels, setChannels] = useState([]);
-  const [activeChannel, setActiveChannel] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const { roomId } = useParams();
+  const navigate = useNavigate();
+  const bottomRef = useRef(null);
+
+  const {
+    isConnected,
+    messages,
+    onlineUsers,
+    typingUsers,
+    isAITyping,
+    roomName,
+    error,
+    sendMessage,
+    startTyping,
+    stopTyping,
+  } = useSocket(roomId);
 
   /* Force dark mode */
   useEffect(() => {
     document.documentElement.classList.add("dark");
+    return () => document.documentElement.classList.remove("dark");
   }, []);
 
-  /* Load channels */
+  /* Redirect if not authenticated */
   useEffect(() => {
-    setChannels(channelsData);
-    setActiveChannel(channelsData[0]);
-  }, []);
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-  /* Load messages when channel changes */
+  /* Redirect on access error */
   useEffect(() => {
-    if (!activeChannel) return;
+    if (error === "Access denied to this room") {
+      navigate("/dashboard");
+    }
+  }, [error, navigate]);
 
-    const filtered = messagesData.filter(
-      (msg) => msg.channelId === activeChannel.id
-    );
-
-    setMessages(filtered);
-  }, [activeChannel]);
-
-  /* Send message (UI only for now) */
-  const handleSendMessage = (content) => {
-    const newMessage = {
-      id: Date.now(),
-      type: "user",
-      author: "Alex Dev",
-      avatar: "/avatars/alex.png",
-      time: "Now",
-      content,
-      channelId: activeChannel.id,
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
-  };
+  /* Auto-scroll to bottom on new messages */
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isAITyping]);
 
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-background-dark text-gray-200 font-sans">
 
       {/* ===================== LEFT SIDEBAR ===================== */}
-      <Sidebar
-        channels={channels}
-        activeChannel={activeChannel}
-        onChannelChange={setActiveChannel}
-      />
+      <Sidebar />
 
       {/* ===================== MAIN CHAT ===================== */}
       <main className="flex-1 flex flex-col min-w-0 relative">
 
-        {/* Header */}
-        <ChatHeader channel={activeChannel} />
+        <ChatHeader
+          channel={{ name: roomName || "Loading…" }}
+          isConnected={isConnected}
+          onlineCount={onlineUsers.length}
+        />
 
-        {/* Messages */}
-        <MessageList messages={messages} />
+        <MessageList
+          messages={messages}
+          isAITyping={isAITyping}
+          typingUsers={typingUsers}
+          bottomRef={bottomRef}
+        />
 
-        {/* Composer */}
-        <MessageComposer onSend={handleSendMessage} />
+        <MessageComposer
+          onSend={sendMessage}
+          onTypingStart={startTyping}
+          onTypingStop={stopTyping}
+          disabled={!isConnected}
+        />
 
       </main>
 
       {/* ===================== RIGHT PANEL ===================== */}
-      <RightPanel />
+      <RightPanel onlineUsers={onlineUsers} />
 
     </div>
   );

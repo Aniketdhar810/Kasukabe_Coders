@@ -1,46 +1,50 @@
-import { Send, Bot, Upload } from "lucide-react";
-import { useState } from "react";
+import { Users, Circle } from "lucide-react";
 
-export default function MessageComposer({ onSend }) {
-  const [text, setText] = useState("");
-
-  const submit = () => {
-    if (!text.trim()) return;
-    onSend(text);
-    setText("");
-  };
-
+export default function RightPanel({ onlineUsers = [] }) {
   return (
-    <div className="p-4 bg-[#0D0D12]/95 border-t border-gray-800">
-      <div className="bg-[#15151A] rounded-xl border border-gray-700 focus-within:ring-1 focus-within:ring-lime-400/50">
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-700">
-          <button className="text-lime-400 flex items-center gap-1 text-xs font-bold">
-            <Bot size={14} /> Ask AI
-          </button>
-          <button className="text-gray-400 flex items-center gap-1 text-xs">
-            <Upload size={14} /> Upload log
-          </button>
-          <span className="ml-auto text-[10px] text-gray-500 font-mono">
-            Markdown supported
-          </span>
-        </div>
-
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Message #general-dev or ask @ARIA..."
-          className="w-full bg-transparent text-gray-200 resize-none p-4 focus:outline-none min-h-[70px]"
-        />
-
-        <div className="flex justify-end px-3 pb-3">
-          <button
-            onClick={submit}
-            className="bg-lime-400 hover:bg-lime-300 text-black p-2 rounded-lg"
-          >
-            <Send size={18} />
-          </button>
-        </div>
+    <aside className="w-60 bg-[#15151A] border-l border-gray-800 hidden lg:flex flex-col">
+      {/* Header */}
+      <div className="h-16 border-b border-gray-800 flex items-center px-4 gap-2">
+        <Users size={16} className="text-gray-400" />
+        <span className="text-sm font-semibold text-gray-300">Online</span>
+        <span className="ml-auto text-xs bg-lime-400/10 text-lime-400 border border-lime-400/20 px-2 py-0.5 rounded-full">
+          {onlineUsers.length}
+        </span>
       </div>
-    </div>
+
+      {/* User list */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        {onlineUsers.length === 0 ? (
+          <p className="text-xs text-gray-600 text-center mt-8">No one else is online</p>
+        ) : (
+          onlineUsers.map((user) => (
+            <div
+              key={user.userId}
+              className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition"
+            >
+              <div className="relative flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-lime-400/20 border border-lime-400/30 flex items-center justify-center text-lime-400 font-bold text-xs">
+                  {(user.username || "?").charAt(0).toUpperCase()}
+                </div>
+                <Circle
+                  size={8}
+                  className="absolute -bottom-0.5 -right-0.5 text-lime-400 fill-lime-400"
+                />
+              </div>
+              <span className="text-sm text-gray-300 truncate">{user.username}</span>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Footer hint */}
+      <div className="p-4 border-t border-gray-800">
+        <p className="text-[10px] text-gray-600 text-center leading-relaxed">
+          Type <span className="text-lime-400 font-mono">@ai</span> or{" "}
+          <span className="text-lime-400 font-mono">@gemini</span> followed by your
+          question to get an AI answer in chat.
+        </p>
+      </div>
+    </aside>
   );
 }

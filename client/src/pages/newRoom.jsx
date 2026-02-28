@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { X, Hash, ArrowRight } from "lucide-react";
+import { X, Hash, ArrowRight, Loader2 } from "lucide-react";
+import API from "../lib/api";
 
 /* ---------------- animations ---------------- */
 
@@ -28,11 +29,31 @@ const cardAnim = {
 export default function CreateRoomPage() {
   const navigate = useNavigate();
   const [isPrivate, setIsPrivate] = useState(false);
+  const [roomName, setRoomName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   /* Force dark mode for this page */
   useEffect(() => {
     document.documentElement.classList.add("dark");
   }, []);
+
+  const handleCreate = async () => {
+    if (!roomName.trim()) {
+      setError("Room name is required");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const res = await API.post("/rooms", { name: roomName.trim() });
+      navigate(`/room/${res.data.room._id}`);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create room");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -85,6 +106,8 @@ export default function CreateRoomPage() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
               />
               <input
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
                 placeholder="e.g. Frontend Architecture Review"
                 className="w-full pl-10 pr-3 py-3 rounded-lg
                            bg-[#080610] text-[#f2f2e4]
@@ -169,6 +192,9 @@ export default function CreateRoomPage() {
 
         {/* FOOTER */}
         <div className="px-8 py-6 flex justify-end gap-3 bg-[#080610]/40 border-t border-white/10">
+          {error && (
+            <p className="text-red-400 text-sm flex-1 flex items-center">{error}</p>
+          )}
           <button
             onClick={() => navigate("/dashboard")}
             className="text-sm text-gray-400 hover:text-white transition"
@@ -179,14 +205,17 @@ export default function CreateRoomPage() {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
+            onClick={handleCreate}
+            disabled={loading}
             className="flex items-center gap-2 px-6 py-2.5
                        bg-[#DFFF5E] text-black font-bold rounded-lg
                        shadow-[0_0_15px_rgba(223,255,94,0.35)]
                        hover:shadow-[0_0_25px_rgba(223,255,94,0.6)]
+                       disabled:opacity-60 disabled:cursor-not-allowed
                        transition"
           >
-            Create Room
-            <ArrowRight size={16} />
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
+            {loading ? "Creating…" : "Create Room"}
           </motion.button>
         </div>
 
