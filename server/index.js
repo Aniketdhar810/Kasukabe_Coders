@@ -17,6 +17,7 @@ app.use(passport.initialize());
 require("./passport")(passport);
 
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/rooms", require("./routes/rooms"));
 
 app.get("/", (req, res) => {
   res.send("Server Running");

@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
   password: String,
   isVerified: { type: Boolean, default: false },
   verificationCode: String,
+  verificationCodeExpiresAt: Date,
+  verificationAttempts: { type: Number, default: 0 },
+  verificationLastSentAt: Date,
+  verificationLockUntil: Date,
 });
 
 module.exports = mongoose.model("User", userSchema);

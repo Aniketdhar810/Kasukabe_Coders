@@ -10,7 +10,8 @@ module.exports = function (passport) {
       { usernameField: "email" },
       async (email, password, done) => {
         try {
-          const user = await User.findOne({ email });
+          const normalizedEmail = email.trim().toLowerCase();
+          const user = await User.findOne({ email: normalizedEmail });
           if (!user) return done(null, false);
           if (!user.isVerified) return done(null, false);
 

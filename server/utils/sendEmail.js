@@ -1,26 +1,31 @@
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (email, code) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  const emailUser = process.env.EMAIL_USER;
+  const emailPass = process.env.EMAIL_PASS;
 
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Verification Code",
-      text: `Your verification code is: ${code}`,
-    });
-
-    console.log("Email sent successfully:", info.response);
-  } catch (error) {
-    console.error("Email sending failed:", error);
+  if (!emailUser || !emailPass) {
+    throw new Error("EMAIL_USER and EMAIL_PASS must be configured");
   }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: emailUser,
+      pass: emailPass,
+    },
+  });
+
+  await transporter.verify();
+
+  const info = await transporter.sendMail({
+    from: emailUser,
+    to: email,
+    subject: "Verification Code",
+    text: `Your verification code is: ${code}`,
+  });
+
+  console.log("Email sent successfully:", info.response);
 };
 
 module.exports = sendEmail;
