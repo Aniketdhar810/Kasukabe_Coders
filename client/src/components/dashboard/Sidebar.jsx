@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Compass,
@@ -24,7 +25,7 @@ const itemVariants = {
 };
 
 export default function Sidebar() {
-  /* ✅ FORCE DARK MODE ONLY FOR SIDEBAR PAGE */
+  const navigate = useNavigate();
   useEffect(() => {
     document.documentElement.classList.add("dark");
 
@@ -47,7 +48,8 @@ export default function Sidebar() {
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="w-full bg-primary hover:bg-primary-hover text-black font-semibold py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition"
+          onClick={() => navigate("/create-room")}
+          className="w-full cursor-pointer bg-primary hover:bg-primary-hover text-black font-semibold py-2.5 px-4 rounded-lg shadow-sm flex items-center justify-center gap-2 transition"
         >
           <Plus size={18} />
           Create Room

@@ -1,8 +1,10 @@
 import { BellDot , CircleUser, Search} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <header className="h-16 border-b border-[#1F2937] flex items-center justify-between px-6 bg-[#0F0F16]">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/dashboard")}>
         <div className="w-8 h-8 bg-lime-400 text-black font-bold flex items-center justify-center rounded">
           A
         </div>
@@ -17,7 +19,7 @@ export default function Header() {
         <span className="material-icons text-gray-400 cursor-pointer">
           <BellDot />
         </span>
-        <span className="material-icons text-gray-400 cursor-pointer">
+        <span className="material-icons text-gray-400 cursor-pointer" onClick={() => navigate("/profile")}>
           <CircleUser />
         </span>
       </div>
